@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { PROJECT_DATA } from '../constants';
-import { TechBadge } from './SharedUI';
+import { TechBadge } from './ShareUI';
 
 export const ImageCarousel = ({ images }: { images: string[] }) => {
     const [index, setIndex] = useState(0);

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { COLORS } from './constants';
-import { TerminalHeader } from './components/SharedUI';
+import { TerminalHeader } from './components/ShareUI';
 import { EdgeNetwork, CameraRig } from './components/Scene3D';
 import ContentPanel from './ContentPanel';
 

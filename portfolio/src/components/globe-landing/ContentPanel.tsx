@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { PROJECT_DATA } from './constants';
-import { StatBox, TechBadge } from './components/SharedUI';
+import { StatBox, TechBadge } from './components/ShareUI';
 import { ProjectCard, ProjectDetailView } from './components/ProjectUI';
 
 const panelVariants: Variants = {
