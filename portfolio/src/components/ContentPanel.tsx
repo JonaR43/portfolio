@@ -1,0 +1,122 @@
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { PROJECT_DATA } from './constants';
+import { StatBox, TechBadge } from './components/SharedUI';
+import { ProjectCard, ProjectDetailView } from './components/ProjectUI';
+
+const panelVariants: Variants = {
+  hidden: { y: '100%' },
+  visible: { y: 0, transition: { type: "spring", damping: 25, stiffness: 200, delay: 0.6 } },
+  exit: { y: '100%', transition: { type: "spring", damping: 30, stiffness: 300, delay: 0 } }
+};
+
+const backdropVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.5 } },
+    exit: { opacity: 0, transition: { duration: 0.3 } }
+};
+
+export default function ContentPanel({ activeSection, onClose }: { activeSection: string | null, onClose: () => void }) {
+    const [activeProject, setActiveProject] = useState<typeof PROJECT_DATA[0] | null>(null);
+    const isExpanded = !!activeProject;
+
+    useEffect(() => {
+        if (!activeSection) setActiveProject(null);
+    }, [activeSection]);
+
+    return (
+        <AnimatePresence mode="wait">
+            {activeSection && (
+                <>
+                    <motion.div key="backdrop" variants={backdropVariants} initial="hidden" animate="visible" exit="exit" onClick={onClose} className="fixed inset-0 z-[9990] bg-black/80 backdrop-blur-[2px]" />
+                    <motion.div key="panel" variants={panelVariants} initial="hidden"
+                        animate={{ y: 0, height: isExpanded ? '100vh' : '85vh', borderTopLeftRadius: isExpanded ? '0px' : '24px', borderTopRightRadius: isExpanded ? '0px' : '24px', transition: { type: "spring", damping: 25, stiffness: 200 } }}
+                        exit="exit"
+                        style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', zIndex: 9999, backgroundColor: '#0a0a0a', borderTop: '2px solid #E07A5F', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+                        className="shadow-2xl"
+                    >
+                        <div style={{ position: 'absolute', inset: 0, zIndex: 0, opacity: 0.03, backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '30px 30px', pointerEvents: 'none' }} />
+                        <div className="relative z-10 flex items-center justify-between p-6 border-b border-white/10 bg-[#0f0f0f]">
+                             <button onClick={onClose} className="flex items-center gap-2 text-[#E07A5F] hover:text-white transition-colors group cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                <span className="font-mono text-xs tracking-[0.2em] uppercase">ABORT_VIEW</span>
+                             </button>
+                             <div className="flex items-center gap-3">
+                                 <div className="w-1.5 h-1.5 bg-[#E07A5F] rounded-full animate-pulse" />
+                                 <h2 className="text-lg font-bold tracking-[0.2em] text-[#F4F1DE] uppercase opacity-80 hidden md:block font-mono">// {activeSection} {activeProject ? `/ ${activeProject.id}` : ''}</h2>
+                             </div>
+                        </div>
+                        <div className="relative z-10 flex-1 overflow-y-auto p-6 md:p-12 text-gray-300 font-sans">
+                            <div className="max-w-7xl mx-auto" style={{ height: '100%' }}>
+                                {activeSection === 'about' && (
+                                    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                        <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '32px', marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                                            <div>
+                                                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>Operator <span style={{ color: '#E07A5F' }}>Dossier</span></h1>
+                                                <p style={{ fontSize: '1.125rem', color: '#9ca3af', maxWidth: '600px', lineHeight: '1.75' }}>Architecting high-concurrency systems for the competitive arena.</p>
+                                            </div>
+                                            <div style={{ textAlign: 'right', display: 'none' }} className="md:block">
+                                                <div style={{ fontSize: '10px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'monospace' }}>Clearance Level</div>
+                                                <div style={{ color: '#E07A5F', fontWeight: 'bold', fontSize: '1.25rem', fontFamily: 'monospace' }}>ALPHA-1</div>
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px' }}>
+                                            <StatBox label="Class" value="Architect" />
+                                            <StatBox label="Stack" value="Golang" sub="v1.21+" />
+                                            <StatBox label="Latency" value="<50ms" sub="Global" />
+                                            <StatBox label="Cost" value="$0.00" sub="Serverless" />
+                                        </div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' }}>
+                                            <div style={{ padding: '32px', background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                <h3 style={{ color: '#E07A5F', fontFamily: 'monospace', letterSpacing: '0.1em', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ fontSize: '1.25rem' }}>⌖</span> OBJECTIVE</h3>
+                                                <p style={{ fontSize: '1rem', lineHeight: '2', color: '#d1d5db', fontWeight: '300' }}>My mission is to balance complex real-time engineering with a ruthless cost strategy.</p>
+                                            </div>
+                                            <div style={{ padding: '32px', background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                <h3 style={{ color: '#E07A5F', fontFamily: 'monospace', letterSpacing: '0.1em', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ fontSize: '1.25rem' }}>⚡</span> ARSENAL</h3>
+                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>{['Golang', 'AWS Lambda', 'Redis Cluster', 'Docker', 'K8s', 'Terraform', 'gRPC', 'Postgres'].map(tech => <TechBadge key={tech} label={tech} />)}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {activeSection === 'projects' && (
+                                    <>
+                                        {!activeProject ? (
+                                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '24px', marginBottom: '32px' }}>
+                                                    <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'white', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>Mission <span style={{ color: '#E07A5F' }}>Logs</span></h1>
+                                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><span style={{ width: '8px', height: '8px', backgroundColor: '#E07A5F', borderRadius: '50%', display: 'inline-block' }} className="animate-pulse" /><span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#E07A5F' }}>STATUS: CLASSIFIED</span></div>
+                                                </div>
+                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '48px' }}>
+                                                    {PROJECT_DATA.map((project) => (<ProjectCard key={project.id} project={project} onClick={() => setActiveProject(project)} />))}
+                                                </div>
+                                            </div>
+                                        ) : (<ProjectDetailView project={activeProject} onBack={() => setActiveProject(null)} />)}
+                                    </>
+                                )}
+                                {activeSection === 'contact' && (
+                                    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '48px 0' }}>
+                                        <div style={{ position: 'relative', width: '100%', maxWidth: '600px' }}>
+                                            <div style={{ position: 'absolute', inset: '-4px', background: 'linear-gradient(to right, #E07A5F, #9333ea)', borderRadius: '8px', filter: 'blur(20px)', opacity: 0.25 }}></div>
+                                            <div style={{ position: 'relative', backgroundColor: '#111', border: '1px solid rgba(255,255,255,0.1)', padding: '48px', borderRadius: '8px', textAlign: 'center' }}>
+                                                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '24px', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>Establish <span style={{ color: '#E07A5F' }}>Uplink</span></h1>
+                                                <p style={{ color: '#9ca3af', marginBottom: '40px', fontSize: '1.125rem', fontWeight: '300' }}>Secure channels are open. Ready to discuss high-performance architecture.</p>
+                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', width: '100%' }}>
+                                                    {['Email_Protocol', 'GitHub_Repo', 'LinkedIn_Feed', 'Resume_DL'].map((label) => (
+                                                        <button key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s' }} className="hover:bg-[#E07A5F] hover:text-black hover:border-[#E07A5F] group">
+                                                            <span style={{ fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '12px' }}>{label}</span>
+                                                            <span style={{ fontSize: '14px' }}>→</span>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </motion.div>
+                </>
+            )}
+        </AnimatePresence>
+    );
+}

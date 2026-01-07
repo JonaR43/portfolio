@@ -23,23 +23,39 @@ const PROJECT_DATA = [
     {
         id: 'DL-01',
         title: 'Esports Data Lake',
-        desc: 'Ingesting 5TB of match data daily via serverless pipelines.',
-        tech: ['AWS S3', 'Athena', 'Kinesis'],
-        image: 'https://images.unsplash.com/photo-1558494949-efc025793ad2?auto=format&fit=crop&q=80&w=400'
+        desc: 'Ingesting 5TB of match data daily via serverless pipelines. Normalized disparate data sources into a unified queryable format for analytics teams.',
+        tech: ['AWS S3', 'Athena', 'Kinesis', 'Python'],
+        gallery: [
+            'https://images.unsplash.com/photo-1558494949-efc025793ad2?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=800'
+        ],
+        githubUrl: 'https://github.com',
+        liveUrl: 'https://google.com'
     },
     {
         id: 'OE-99',
         title: 'Odds Engine',
-        desc: 'Sub-50ms latency engine for calculating live win probabilities.',
-        tech: ['Golang', 'Redis', 'WebSockets'],
-        image: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&q=80&w=400'
+        desc: 'Sub-50ms latency engine for calculating live win probabilities. Uses in-memory caching and optimized Go routines to handle concurrent probability modeling.',
+        tech: ['Golang', 'Redis', 'WebSockets', 'Docker'],
+        gallery: [
+            'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=800'
+        ],
+        githubUrl: 'https://github.com',
+        liveUrl: 'https://google.com'
     },
     {
         id: 'MT-42',
         title: 'Match Telemetry',
-        desc: 'Real-time player movement tracking and heatmap generation.',
-        tech: ['Rust', 'Kafka', 'React'],
-        image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=400'
+        desc: 'Real-time player movement tracking and heatmap generation. visualizes player density and rotation patterns on a live 2D map.',
+        tech: ['Rust', 'Kafka', 'React', 'D3.js'],
+        gallery: [
+            'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=800'
+        ],
+        githubUrl: 'https://github.com',
+        liveUrl: 'https://google.com'
     }
 ];
 
@@ -87,76 +103,193 @@ const StatBox = ({ label, value, sub }: { label: string, value: string, sub?: st
     </div>
 );
 
-// --- COMPONENT: PROJECT CARD (Hardcoded Styles) ---
+// --- COMPONENT: IMAGE CAROUSEL ---
+const ImageCarousel = ({ images }: { images: string[] }) => {
+    const [index, setIndex] = useState(0);
+
+    const next = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIndex((prev) => (prev + 1) % images.length);
+    };
+
+    const prev = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
+
+    return (
+        <div style={{ 
+            position: 'relative', 
+            width: '100%', 
+            height: '100%', 
+            minHeight: '400px',
+            backgroundColor: '#000', 
+            borderRadius: '8px', 
+            overflow: 'hidden', 
+            border: '1px solid rgba(255,255,255,0.1)' 
+        }}>
+            {/* Image */}
+            <img 
+                src={images[index]} 
+                alt="Project Gallery" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.9 }} 
+            />
+            
+            {/* Overlay Grid */}
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
+
+            {/* Controls */}
+            {images.length > 1 && (
+                <>
+                    <button 
+                        onClick={prev}
+                        style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', backgroundColor: 'rgba(0,0,0,0.7)', color: '#fff', border: '1px solid #E07A5F', padding: '12px', cursor: 'pointer', borderRadius: '4px', zIndex: 20 }}
+                    >
+                        ←
+                    </button>
+                    <button 
+                        onClick={next}
+                        style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', backgroundColor: 'rgba(0,0,0,0.7)', color: '#fff', border: '1px solid #E07A5F', padding: '12px', cursor: 'pointer', borderRadius: '4px', zIndex: 20 }}
+                    >
+                        →
+                    </button>
+                </>
+            )}
+
+            {/* Counter Badge */}
+            <div style={{ position: 'absolute', bottom: '16px', right: '16px', backgroundColor: 'black', padding: '4px 12px', fontFamily: 'monospace', fontSize: '12px', color: '#E07A5F', border: '1px solid #E07A5F' }}>
+                IMG_0{index + 1} / 0{images.length}
+            </div>
+        </div>
+    );
+};
+
+// --- COMPONENT: PROJECT DETAIL VIEW ---
+const ProjectDetailView = ({ project, onBack }: { project: typeof PROJECT_DATA[0], onBack: () => void }) => {
+    return (
+        <div className="animate-in fade-in slide-in-from-bottom-8 duration-500" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            
+            {/* 1. Header Bar */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '16px' }}>
+                <button 
+                    onClick={onBack}
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: 'none', color: '#E07A5F', cursor: 'pointer', fontFamily: 'monospace', fontSize: '14px', letterSpacing: '0.1em' }}
+                >
+                    ← RETURN_TO_LIST
+                </button>
+                <div style={{ fontFamily: 'monospace', color: '#666', fontSize: '12px' }}>ID: {project.id} // CLASSIFIED</div>
+            </div>
+
+            {/* 2. Split Content Layout */}
+            <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
+                gap: '48px',
+                height: '100%',
+                paddingBottom: '40px'
+            }}>
+                
+                {/* LEFT COLUMN: CAROUSEL */}
+                <div style={{ height: '100%', maxHeight: '65vh' }}>
+                    <ImageCarousel images={project.gallery} />
+                </div>
+
+                {/* RIGHT COLUMN: SCROLLABLE CONTENT */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', overflowY: 'auto' }}>
+                    
+                    {/* Title Area */}
+                    <div>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'white', fontFamily: 'monospace', textTransform: 'uppercase', lineHeight: '1.1' }}>
+                            {project.title}
+                        </h1>
+                        <div style={{ height: '2px', width: '60px', backgroundColor: '#E07A5F', marginTop: '16px' }} />
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <h3 style={{ color: '#E07A5F', fontFamily: 'monospace', letterSpacing: '0.1em', marginBottom: '12px', fontSize: '12px' }}>
+                            // MISSION_BRIEF
+                        </h3>
+                        <p style={{ color: '#ccc', lineHeight: '1.8', fontSize: '16px', fontWeight: '300' }}>
+                            {project.desc}
+                        </p>
+                    </div>
+
+                    {/* Tech Stack */}
+                    <div>
+                        <h3 style={{ color: '#E07A5F', fontFamily: 'monospace', letterSpacing: '0.1em', marginBottom: '12px', fontSize: '12px' }}>
+                            // TECH_STACK
+                        </h3>
+                        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                            {project.tech.map(t => <TechBadge key={t} label={t} />)}
+                        </div>
+                    </div>
+
+                    {/* Links */}
+                    <div style={{ marginTop: 'auto' }}>
+                        <h3 style={{ color: '#E07A5F', fontFamily: 'monospace', letterSpacing: '0.1em', marginBottom: '12px', fontSize: '12px' }}>
+                            // UPLINKS
+                        </h3>
+                        <div style={{ display: 'flex', gap: '16px' }}>
+                            <a 
+                                href={project.githubUrl} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                style={{ flex: 1, textAlign: 'center', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', textDecoration: 'none', fontFamily: 'monospace', fontSize: '12px', borderRadius: '4px', transition: 'all 0.2s' }}
+                                onMouseOver={(e) => e.currentTarget.style.borderColor = '#E07A5F'}
+                                onMouseOut={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'}
+                            >
+                                GITHUB_REPO
+                            </a>
+                            <a 
+                                href={project.liveUrl} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                style={{ flex: 1, textAlign: 'center', padding: '16px', backgroundColor: '#E07A5F', color: 'black', textDecoration: 'none', fontFamily: 'monospace', fontSize: '12px', borderRadius: '4px', fontWeight: 'bold' }}
+                            >
+                                LIVE_DEMO
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// --- COMPONENT: PROJECT CARD ---
 const ProjectCard = ({ project, onClick }: { project: typeof PROJECT_DATA[0], onClick: (id: string) => void }) => (
     <div 
         onClick={() => onClick(project.id)}
-        className="group" // Keeping 'group' for hover effects if Tailwind is working, but styles handle layout
+        className="group"
         style={{
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'relative',
-            height: '100%',
-            minHeight: '400px',
-            cursor: 'pointer',
+            display: 'flex', flexDirection: 'column', position: 'relative', height: '100%', minHeight: '400px', cursor: 'pointer',
             background: 'linear-gradient(180deg, rgba(30,30,35,0.8) 0%, rgba(10,10,10,1) 100%)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            boxShadow: '0 10px 30px -5px rgba(0,0,0,0.5)',
-            transition: 'transform 0.3s ease, border-color 0.3s ease'
+            border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden',
+            boxShadow: '0 10px 30px -5px rgba(0,0,0,0.5)', transition: 'transform 0.3s ease'
         }}
     >
-        {/* Image Section */}
         <div style={{ position: 'relative', height: '220px', width: '100%', overflow: 'hidden', backgroundColor: '#000' }}>
             <img 
-                src={project.image} 
+                src={project.gallery[0]}
                 alt={project.title}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'center', // Forces centering
-                    opacity: 0.8,
-                    transition: 'transform 0.5s ease',
-                    filter: 'grayscale(100%) contrast(1.2)'
-                }}
-                className="group-hover:scale-105 group-hover:grayscale-0" // Fallback to Tailwind for hover
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.8, transition: 'transform 0.5s ease', filter: 'grayscale(100%) contrast(1.2)' }}
+                className="group-hover:scale-105 group-hover:grayscale-0"
             />
-            {/* Vignette */}
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,1), transparent)' }} />
-            
-            {/* ID Tag */}
             <div style={{ position: 'absolute', top: 0, right: 0, backgroundColor: '#E07A5F', color: '#000', padding: '4px 12px', fontSize: '10px', fontFamily: 'monospace', fontWeight: 'bold' }}>
                 {project.id}
             </div>
         </div>
 
-        {/* Content Section */}
         <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-            
-            {/* Title */}
-            <h3 style={{ 
-                fontSize: '1.25rem', 
-                fontWeight: 'bold', 
-                color: 'white', 
-                fontFamily: '"Share Tech Mono", monospace', 
-                textTransform: 'uppercase', 
-                letterSpacing: '-0.02em', 
-                marginBottom: '8px' 
-            }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', fontFamily: '"Share Tech Mono", monospace', textTransform: 'uppercase', letterSpacing: '-0.02em', marginBottom: '8px' }}>
                 {project.title}
             </h3>
-            
-            {/* Divider */}
             <div style={{ height: '1px', width: '40px', backgroundColor: '#E07A5F', marginBottom: '16px', opacity: 0.6 }} />
-
-            {/* Description */}
             <p style={{ fontSize: '0.875rem', color: '#aaa', lineHeight: '1.6', marginBottom: '24px', flex: 1 }}>
                 {project.desc}
             </p>
-            
-            {/* Tech Stack */}
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
                 {project.tech.map(t => <TechBadge key={t} label={t} />)}
             </div>
@@ -306,7 +439,7 @@ function CameraRig({ activeSection }: { activeSection: string | null }) {
     return null;
 }
 
-// --- PANEL ANIMATION ---
+// --- PANEL ANIMATION VARIANTS ---
 const panelVariants: Variants = {
   hidden: { y: '100%' },
   visible: { 
@@ -328,9 +461,16 @@ const backdropVariants: Variants = {
 // --- CONTENT PANEL ---
 function ContentPanel({ activeSection, onClose }: { activeSection: string | null, onClose: () => void }) {
     
-    const handleProjectClick = (id: string) => {
-        console.log("Accessing Mission Log:", id);
-    };
+    // Track which project is clicked
+    const [activeProject, setActiveProject] = useState<typeof PROJECT_DATA[0] | null>(null);
+    
+    // Derived state for expanding the panel
+    const isExpanded = !!activeProject;
+
+    // Reset project view when closing the main panel or switching main sections
+    useEffect(() => {
+        if (!activeSection) setActiveProject(null);
+    }, [activeSection]);
 
     return (
         <AnimatePresence mode="wait">
@@ -350,14 +490,24 @@ function ContentPanel({ activeSection, onClose }: { activeSection: string | null
                         key="panel"
                         variants={panelVariants}
                         initial="hidden"
-                        animate="visible"
+                        // Animate height and rounding based on expansion state
+                        animate={{ 
+                            y: 0,
+                            height: isExpanded ? '100vh' : '85vh',
+                            borderTopLeftRadius: isExpanded ? '0px' : '24px',
+                            borderTopRightRadius: isExpanded ? '0px' : '24px',
+                            transition: { type: "spring", damping: 25, stiffness: 200 }
+                        }}
                         exit="exit"
                         style={{ 
-                            position: 'fixed', bottom: 0, left: 0, width: '100%', height: '85vh', zIndex: 9999, 
+                            position: 'fixed', bottom: 0, left: 0, width: '100%', zIndex: 9999, 
                             backgroundColor: '#0a0a0a', 
-                            borderTop: '2px solid #E07A5F'
+                            borderTop: '2px solid #E07A5F',
+                            overflow: 'hidden',
+                            display: 'flex',
+                            flexDirection: 'column'
                         }}
-                        className="shadow-2xl flex flex-col overflow-hidden rounded-t-3xl"
+                        className="shadow-2xl"
                     >
                         {/* Background Grid Pattern */}
                         <div 
@@ -376,14 +526,14 @@ function ContentPanel({ activeSection, onClose }: { activeSection: string | null
                              <div className="flex items-center gap-3">
                                  <div className="w-1.5 h-1.5 bg-[#E07A5F] rounded-full animate-pulse" />
                                  <h2 className="text-lg font-bold tracking-[0.2em] text-[#F4F1DE] uppercase opacity-80 hidden md:block font-mono">
-                                    // {activeSection}
+                                    // {activeSection} {activeProject ? `/ ${activeProject.id}` : ''}
                                  </h2>
                              </div>
                         </div>
                         
                         {/* SCROLLABLE CONTENT */}
                         <div className="relative z-10 flex-1 overflow-y-auto p-6 md:p-12 text-gray-300 font-sans">
-                            <div className="max-w-6xl mx-auto">
+                            <div className="max-w-7xl mx-auto" style={{ height: '100%' }}>
                                 
                                 {activeSection === 'about' && (
                                     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -402,7 +552,6 @@ function ContentPanel({ activeSection, onClose }: { activeSection: string | null
                                             </div>
                                         </div>
 
-                                        {/* GRID STYLING FIXED */}
                                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px' }}>
                                             <StatBox label="Class" value="Architect" />
                                             <StatBox label="Stack" value="Golang" sub="v1.21+" />
@@ -435,34 +584,41 @@ function ContentPanel({ activeSection, onClose }: { activeSection: string | null
                                 )}
 
                                 {activeSection === 'projects' && (
-                                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '24px', marginBottom: '32px' }}>
-                                            <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'white', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>
-                                                Mission <span style={{ color: '#E07A5F' }}>Logs</span>
-                                            </h1>
-                                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                                <span style={{ width: '8px', height: '8px', backgroundColor: '#E07A5F', borderRadius: '50%', display: 'inline-block' }} className="animate-pulse" />
-                                                <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#E07A5F' }}>STATUS: CLASSIFIED</span>
-                                            </div>
-                                        </div>
+                                    <>
+                                        {!activeProject ? (
+                                            /* LIST VIEW (GRID) */
+                                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '24px', marginBottom: '32px' }}>
+                                                    <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'white', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>
+                                                        Mission <span style={{ color: '#E07A5F' }}>Logs</span>
+                                                    </h1>
+                                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                                        <span style={{ width: '8px', height: '8px', backgroundColor: '#E07A5F', borderRadius: '50%', display: 'inline-block' }} className="animate-pulse" />
+                                                        <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#E07A5F' }}>STATUS: CLASSIFIED</span>
+                                                    </div>
+                                                </div>
 
-                                        {/* PROJECT GRID */}
-                                        <div 
-                                            style={{
-                                                display: 'grid',
-                                                gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-                                                gap: '48px'
-                                            }}
-                                        >
-                                            {PROJECT_DATA.map((project) => (
-                                                <ProjectCard 
-                                                    key={project.id} 
-                                                    project={project} 
-                                                    onClick={handleProjectClick} 
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
+                                                <div 
+                                                    style={{
+                                                        display: 'grid',
+                                                        gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+                                                        gap: '48px'
+                                                    }}
+                                                >
+                                                    {PROJECT_DATA.map((project) => (
+                                                        <ProjectCard 
+                                                            key={project.id} 
+                                                            project={project} 
+                                                            onClick={() => setActiveProject(project)} 
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            /* DETAIL VIEW */
+                                            <ProjectDetailView project={activeProject} onBack={() => setActiveProject(null)} />
+                                        )}
+                                    </>
                                 )}
 
                                 {activeSection === 'contact' && (
@@ -530,6 +686,7 @@ export default function GlobeLanding() {
         </div>
 
         <TerminalHeader visible={activeSection === null} />
+
         <ContentPanel activeSection={activeSection} onClose={() => setActiveSection(null)} />
     </div>
   );
