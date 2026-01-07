@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useIsMobile } from '../hooks'; // Import the hook
 
 export const TechBadge = ({ label }: { label: string }) => (
     <span style={{
@@ -37,6 +38,7 @@ export const StatBox = ({ label, value, sub }: { label: string, value: string, s
 
 export function TerminalHeader({ visible }: { visible: boolean }) {
     const [time, setTime] = useState("");
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const updateTime = () => {
@@ -55,7 +57,16 @@ export function TerminalHeader({ visible }: { visible: boolean }) {
             initial={{ opacity: 1 }}
             animate={{ opacity: visible ? 1 : 0 }}
             transition={{ duration: 0.5 }}
-            style={{ position: 'absolute', top: '40px', left: '40px', zIndex: 5000, pointerEvents: 'none', userSelect: 'none' }}
+            style={{ 
+                position: 'absolute', 
+                // RESPONSIVE POSITIONING
+                top: isMobile ? '20px' : '40px', 
+                left: isMobile ? '20px' : '40px', 
+                zIndex: 5000, 
+                pointerEvents: 'none', 
+                userSelect: 'none',
+                maxWidth: isMobile ? '80%' : 'auto'
+            }}
         >
             <style>{`@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');`}</style>
             <div style={{ fontFamily: '"Share Tech Mono", monospace' }}>
@@ -74,11 +85,11 @@ export function TerminalHeader({ visible }: { visible: boolean }) {
                     <div style={{ position: 'absolute', top: '-1px', right: '-1px', width: '10px', height: '10px', borderTop: '2px solid #E07A5F', borderRight: '2px solid #E07A5F' }} />
                     <div style={{ position: 'absolute', bottom: '-1px', left: '-1px', width: '10px', height: '10px', borderBottom: '2px solid #E07A5F', borderLeft: '2px solid #E07A5F' }} />
                     
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', marginBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '4px' }}>
-                        <span style={{ color: '#E07A5F', fontSize: '1.125rem', letterSpacing: '0.1em', fontWeight: 'bold' }}>OP_OVERWATCH</span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: isMobile ? '12px' : '24px', marginBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '4px' }}>
+                        <span style={{ color: '#E07A5F', fontSize: isMobile ? '1rem' : '1.125rem', letterSpacing: '0.1em', fontWeight: 'bold' }}>OP_OVERWATCH</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" style={{ backgroundColor: '#22c55e', width: '6px', height: '6px', borderRadius: '50%' }} />
-                             <span style={{ color: '#22c55e', fontSize: '10px', letterSpacing: '0.05em', fontWeight: 'bold' }}>LIVE</span>
+                             {!isMobile && <span style={{ color: '#22c55e', fontSize: '10px', letterSpacing: '0.05em', fontWeight: 'bold' }}>LIVE</span>}
                         </div>
                     </div>
                     <div style={{ color: '#F4F1DE', fontSize: '12px', opacity: 0.8, letterSpacing: '0.05em', display: 'flex', flexDirection: 'column', gap: '2px' }}>

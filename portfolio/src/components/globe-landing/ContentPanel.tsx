@@ -3,6 +3,7 @@ import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { PROJECT_DATA } from './constants';
 import { StatBox, TechBadge } from './components/ShareUI';
 import { ProjectCard, ProjectDetailView } from './components/ProjectUI';
+import { useIsMobile } from './hooks';
 
 const panelVariants: Variants = {
   hidden: { y: '100%' },
@@ -18,6 +19,7 @@ const backdropVariants: Variants = {
 
 export default function ContentPanel({ activeSection, onClose }: { activeSection: string | null, onClose: () => void }) {
     const [activeProject, setActiveProject] = useState<typeof PROJECT_DATA[0] | null>(null);
+    const isMobile = useIsMobile();
     const isExpanded = !!activeProject;
 
     useEffect(() => {
@@ -39,34 +41,38 @@ export default function ContentPanel({ activeSection, onClose }: { activeSection
                         <div className="relative z-10 flex items-center justify-between p-6 border-b border-white/10 bg-[#0f0f0f]">
                              <button onClick={onClose} className="flex items-center gap-2 text-[#E07A5F] hover:text-white transition-colors group cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                                <span className="font-mono text-xs tracking-[0.2em] uppercase">ABORT_VIEW</span>
+                                <span className="font-mono text-xs tracking-[0.2em] uppercase">ABORT</span>
                              </button>
                              <div className="flex items-center gap-3">
                                  <div className="w-1.5 h-1.5 bg-[#E07A5F] rounded-full animate-pulse" />
-                                 <h2 className="text-lg font-bold tracking-[0.2em] text-[#F4F1DE] uppercase opacity-80 hidden md:block font-mono">// {activeSection} {activeProject ? `/ ${activeProject.id}` : ''}</h2>
+                                 <h2 className="text-lg font-bold tracking-[0.2em] text-[#F4F1DE] uppercase opacity-80 hidden md:block font-mono">// {activeSection}</h2>
                              </div>
                         </div>
+                        {/* SCROLL CONTAINER */}
                         <div className="relative z-10 flex-1 overflow-y-auto p-6 md:p-12 text-gray-300 font-sans">
-                            <div className="max-w-7xl mx-auto" style={{ height: '100%' }}>
+                            {/* FIX: minHeight instead of height to allow scrolling */}
+                            <div className="max-w-7xl mx-auto" style={{ minHeight: '100%', height: isMobile ? 'auto' : '100%' }}>
                                 {activeSection === 'about' && (
                                     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                        <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '32px', marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                                        <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '32px', marginBottom: '32px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'flex-end', gap: '24px' }}>
                                             <div>
-                                                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>Operator <span style={{ color: '#E07A5F' }}>Dossier</span></h1>
+                                                <h1 style={{ fontSize: isMobile ? '2.5rem' : '3rem', fontWeight: 'bold', color: 'white', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>Operator <span style={{ color: '#E07A5F' }}>Dossier</span></h1>
                                                 <p style={{ fontSize: '1.125rem', color: '#9ca3af', maxWidth: '600px', lineHeight: '1.75' }}>Architecting high-concurrency systems for the competitive arena.</p>
                                             </div>
-                                            <div style={{ textAlign: 'right', display: 'none' }} className="md:block">
-                                                <div style={{ fontSize: '10px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'monospace' }}>Clearance Level</div>
-                                                <div style={{ color: '#E07A5F', fontWeight: 'bold', fontSize: '1.25rem', fontFamily: 'monospace' }}>ALPHA-1</div>
-                                            </div>
+                                            {!isMobile && (
+                                                <div style={{ textAlign: 'right' }}>
+                                                    <div style={{ fontSize: '10px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'monospace' }}>Clearance Level</div>
+                                                    <div style={{ color: '#E07A5F', fontWeight: 'bold', fontSize: '1.25rem', fontFamily: 'monospace' }}>ALPHA-1</div>
+                                                </div>
+                                            )}
                                         </div>
-                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px' }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: '16px', marginBottom: '32px' }}>
                                             <StatBox label="Class" value="Architect" />
                                             <StatBox label="Stack" value="Golang" sub="v1.21+" />
                                             <StatBox label="Latency" value="<50ms" sub="Global" />
                                             <StatBox label="Cost" value="$0.00" sub="Serverless" />
                                         </div>
-                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '32px', paddingBottom: isMobile ? '40px' : '0' }}>
                                             <div style={{ padding: '32px', background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
                                                 <h3 style={{ color: '#E07A5F', fontFamily: 'monospace', letterSpacing: '0.1em', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ fontSize: '1.25rem' }}>⌖</span> OBJECTIVE</h3>
                                                 <p style={{ fontSize: '1rem', lineHeight: '2', color: '#d1d5db', fontWeight: '300' }}>My mission is to balance complex real-time engineering with a ruthless cost strategy.</p>
@@ -83,10 +89,11 @@ export default function ContentPanel({ activeSection, onClose }: { activeSection
                                         {!activeProject ? (
                                             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                                 <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '24px', marginBottom: '32px' }}>
-                                                    <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'white', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>Mission <span style={{ color: '#E07A5F' }}>Logs</span></h1>
+                                                    <h1 style={{ fontSize: isMobile ? '2rem' : '2.5rem', fontWeight: 'bold', color: 'white', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>Mission <span style={{ color: '#E07A5F' }}>Logs</span></h1>
                                                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><span style={{ width: '8px', height: '8px', backgroundColor: '#E07A5F', borderRadius: '50%', display: 'inline-block' }} className="animate-pulse" /><span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#E07A5F' }}>STATUS: CLASSIFIED</span></div>
                                                 </div>
-                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '48px' }}>
+                                                {/* Force padding bottom on mobile so last card isn't cut off */}
+                                                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(350px, 1fr))', gap: '48px', paddingBottom: isMobile ? '80px' : '0' }}>
                                                     {PROJECT_DATA.map((project) => (<ProjectCard key={project.id} project={project} onClick={() => setActiveProject(project)} />))}
                                                 </div>
                                             </div>
@@ -94,13 +101,13 @@ export default function ContentPanel({ activeSection, onClose }: { activeSection
                                     </>
                                 )}
                                 {activeSection === 'contact' && (
-                                    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '48px 0' }}>
+                                    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: isMobile ? '24px 0' : '48px 0' }}>
                                         <div style={{ position: 'relative', width: '100%', maxWidth: '600px' }}>
                                             <div style={{ position: 'absolute', inset: '-4px', background: 'linear-gradient(to right, #E07A5F, #9333ea)', borderRadius: '8px', filter: 'blur(20px)', opacity: 0.25 }}></div>
-                                            <div style={{ position: 'relative', backgroundColor: '#111', border: '1px solid rgba(255,255,255,0.1)', padding: '48px', borderRadius: '8px', textAlign: 'center' }}>
-                                                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '24px', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>Establish <span style={{ color: '#E07A5F' }}>Uplink</span></h1>
+                                            <div style={{ position: 'relative', backgroundColor: '#111', border: '1px solid rgba(255,255,255,0.1)', padding: isMobile ? '24px' : '48px', borderRadius: '8px', textAlign: 'center' }}>
+                                                <h1 style={{ fontSize: isMobile ? '2rem' : '3rem', fontWeight: 'bold', color: 'white', marginBottom: '24px', textTransform: 'uppercase', letterSpacing: '-0.05em', fontFamily: 'monospace' }}>Establish <span style={{ color: '#E07A5F' }}>Uplink</span></h1>
                                                 <p style={{ color: '#9ca3af', marginBottom: '40px', fontSize: '1.125rem', fontWeight: '300' }}>Secure channels are open. Ready to discuss high-performance architecture.</p>
-                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', width: '100%' }}>
+                                                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px', width: '100%' }}>
                                                     {['Email_Protocol', 'GitHub_Repo', 'LinkedIn_Feed', 'Resume_DL'].map((label) => (
                                                         <button key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s' }} className="hover:bg-[#E07A5F] hover:text-black hover:border-[#E07A5F] group">
                                                             <span style={{ fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '12px' }}>{label}</span>
