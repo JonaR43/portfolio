@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { contactService } from '../../services/contact.service';
+import { uploadService } from '../../services/upload.service';
 import type { ContactInfo } from '../../types/contact.types';
 
 const inputStyle = {
@@ -41,6 +42,8 @@ const buttonStyle = {
 export default function ContactEditor({ onBack }: { onBack: () => void }) {
   const [formData, setFormData] = useState<Partial<ContactInfo>>({});
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [isUploadingPdf, setIsUploadingPdf] = useState(false);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
 
   const queryClient = useQueryClient();
 
@@ -75,6 +78,35 @@ export default function ContactEditor({ onBack }: { onBack: () => void }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateMutation.mutate(formData);
+  };
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+      showNotification('error', 'Only PDF files are allowed');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      showNotification('error', 'File size must be less than 10MB');
+      return;
+    }
+
+    setIsUploadingPdf(true);
+    try {
+      const result = await uploadService.uploadPdf(file);
+      setFormData({ ...formData, resume: result.url });
+      showNotification('success', 'Resume uploaded successfully');
+    } catch (err: any) {
+      showNotification('error', err.response?.data?.message || 'Upload failed');
+    } finally {
+      setIsUploadingPdf(false);
+      if (pdfInputRef.current) {
+        pdfInputRef.current.value = '';
+      }
+    }
   };
 
   if (isLoading) {
@@ -209,17 +241,122 @@ export default function ContactEditor({ onBack }: { onBack: () => void }) {
         </div>
 
         <div>
-          <label style={labelStyle}>Resume URL</label>
+          <label style={labelStyle}>Resume (PDF)</label>
           <input
-            type="url"
-            value={formData.resume || ''}
-            onChange={(e) => setFormData({ ...formData, resume: e.target.value || null })}
-            placeholder="https://drive.google.com/... or direct link to PDF"
-            style={inputStyle}
+            ref={pdfInputRef}
+            type="file"
+            accept="application/pdf"
+            onChange={handlePdfUpload}
+            style={{ display: 'none' }}
           />
-          <p style={{ color: '#666', fontSize: '11px', marginTop: '4px', fontFamily: 'monospace' }}>
-            Link to your resume PDF (Google Drive, Dropbox, etc.)
-          </p>
+
+          {formData.resume ? (
+            <div style={{
+              padding: '16px',
+              backgroundColor: 'rgba(34, 197, 94, 0.1)',
+              border: '1px solid rgba(34, 197, 94, 0.3)',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
+                <span style={{ fontSize: '24px' }}>📄</span>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ color: '#22c55e', fontFamily: 'monospace', fontSize: '12px', marginBottom: '4px' }}>
+                    RESUME UPLOADED
+                  </div>
+                  <a
+                    href={formData.resume}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: '#888',
+                      fontFamily: 'monospace',
+                      fontSize: '11px',
+                      wordBreak: 'break-all',
+                      display: 'block',
+                    }}
+                  >
+                    {formData.resume.split('/').pop()}
+                  </a>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                <button
+                  type="button"
+                  onClick={() => pdfInputRef.current?.click()}
+                  disabled={isUploadingPdf}
+                  style={{
+                    ...buttonStyle,
+                    padding: '8px 16px',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    color: '#F4F1DE',
+                  }}
+                >
+                  Replace
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, resume: null })}
+                  style={{
+                    ...buttonStyle,
+                    padding: '8px 16px',
+                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                    color: '#ef4444',
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={() => !isUploadingPdf && pdfInputRef.current?.click()}
+              style={{
+                padding: '32px',
+                border: '2px dashed rgba(255,255,255,0.2)',
+                borderRadius: '8px',
+                backgroundColor: 'rgba(255,255,255,0.02)',
+                cursor: isUploadingPdf ? 'not-allowed' : 'pointer',
+                textAlign: 'center',
+                transition: 'all 0.2s',
+              }}
+            >
+              {isUploadingPdf ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                  <div style={{
+                    width: '32px',
+                    height: '32px',
+                    border: '2px solid #E07A5F',
+                    borderTopColor: 'transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite',
+                  }} />
+                  <span style={{ color: '#888', fontFamily: 'monospace', fontSize: '12px' }}>
+                    UPLOADING...
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>📄</div>
+                  <div style={{ color: '#888', fontFamily: 'monospace', fontSize: '12px', marginBottom: '8px' }}>
+                    CLICK TO UPLOAD RESUME
+                  </div>
+                  <div style={{ color: '#666', fontFamily: 'monospace', fontSize: '10px' }}>
+                    PDF only • Max 10MB
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          <style>{`
+            @keyframes spin {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
         </div>
 
         <div style={{

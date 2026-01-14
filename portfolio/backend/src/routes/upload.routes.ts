@@ -55,6 +55,57 @@ export default async function uploadRoutes(fastify: FastifyInstance) {
     }
   });
 
+  // Upload PDF (protected)
+  fastify.post('/pdf', {
+    preHandler: [authenticate],
+  }, async (request, reply) => {
+    try {
+      const data = await request.file();
+
+      if (!data) {
+        return reply.status(400).send({ error: 'No file uploaded' });
+      }
+
+      // Validate file type
+      if (data.mimetype !== 'application/pdf') {
+        return reply.status(400).send({
+          error: 'Invalid file type',
+          message: 'Only PDF files are allowed',
+        });
+      }
+
+      // Get buffer from stream
+      const chunks: Buffer[] = [];
+      for await (const chunk of data.file) {
+        chunks.push(chunk);
+      }
+      const buffer = Buffer.concat(chunks);
+
+      // Check file size (max 10MB for PDFs)
+      const maxSize = 10 * 1024 * 1024;
+      if (buffer.length > maxSize) {
+        return reply.status(400).send({
+          error: 'File too large',
+          message: 'Maximum file size is 10MB',
+        });
+      }
+
+      // Upload to Cloudinary
+      const result = await cloudinaryService.uploadPdf(buffer, 'portfolio/resume');
+
+      return reply.send({
+        success: true,
+        pdf: result,
+      });
+    } catch (error: any) {
+      console.error('PDF Upload error:', error);
+      return reply.status(500).send({
+        error: 'Upload failed',
+        message: error.message || 'An error occurred during upload',
+      });
+    }
+  });
+
   // Delete image (protected)
   fastify.delete('/image/:publicId', {
     preHandler: [authenticate],

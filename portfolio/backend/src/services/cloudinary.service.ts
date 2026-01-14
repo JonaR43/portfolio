@@ -47,10 +47,42 @@ export const cloudinaryService = {
   },
 
   /**
+   * Upload a PDF buffer to Cloudinary
+   */
+  uploadPdf: async (buffer: Buffer, folder: string = 'portfolio/documents'): Promise<{ url: string; publicId: string }> => {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          folder,
+          resource_type: 'raw',
+          format: 'pdf',
+        },
+        (error, result) => {
+          if (error || !result) {
+            reject(error || new Error('Upload failed'));
+          } else {
+            resolve({
+              url: result.secure_url,
+              publicId: result.public_id,
+            });
+          }
+        }
+      ).end(buffer);
+    });
+  },
+
+  /**
    * Delete an image from Cloudinary
    */
   deleteImage: async (publicId: string): Promise<void> => {
     await cloudinary.uploader.destroy(publicId);
+  },
+
+  /**
+   * Delete a raw file (PDF) from Cloudinary
+   */
+  deletePdf: async (publicId: string): Promise<void> => {
+    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
   },
 
   /**
