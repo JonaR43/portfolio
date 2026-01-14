@@ -166,24 +166,6 @@ export default function Login() {
             {isLoading ? 'AUTHENTICATING...' : 'LOGIN'}
           </button>
         </form>
-
-        <div style={{
-          marginTop: '24px',
-          padding: '16px',
-          backgroundColor: 'rgba(255,255,255,0.02)',
-          borderRadius: '4px',
-          border: '1px solid rgba(255,255,255,0.05)',
-        }}>
-          <p style={{
-            color: '#666',
-            fontSize: '11px',
-            fontFamily: 'monospace',
-            lineHeight: '1.6',
-          }}>
-            Default credentials:<br />
-            <span style={{ color: '#E07A5F' }}>admin@portfolio.com</span> / admin123
-          </p>
-        </div>
       </div>
     </div>
   );
