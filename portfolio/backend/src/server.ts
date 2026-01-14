@@ -13,12 +13,10 @@ const fastify = Fastify({
 });
 
 // Declare JWT user type
-declare module 'fastify' {
-  interface FastifyRequest {
-    user: {
-      id: string;
-      email: string;
-    };
+declare module '@fastify/jwt' {
+  interface FastifyJWT {
+    payload: { id: string; email: string };
+    user: { id: string; email: string };
   }
 }
 
