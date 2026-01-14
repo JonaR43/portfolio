@@ -30,12 +30,13 @@ export default function Dashboard() {
     return (
       <div style={{
         width: '100vw',
-        minHeight: '100vh',
+        height: '100vh',
         backgroundColor: '#121212',
         color: '#F4F1DE',
-        padding: '48px',
+        overflow: 'auto',
+        boxSizing: 'border-box',
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '48px' }}>
           <ProjectsManager onBack={() => setActiveView('dashboard')} />
         </div>
       </div>
@@ -46,12 +47,13 @@ export default function Dashboard() {
     return (
       <div style={{
         width: '100vw',
-        minHeight: '100vh',
+        height: '100vh',
         backgroundColor: '#121212',
         color: '#F4F1DE',
-        padding: '48px',
+        overflow: 'auto',
+        boxSizing: 'border-box',
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '48px' }}>
           <AboutEditor onBack={() => setActiveView('dashboard')} />
         </div>
       </div>
@@ -62,12 +64,13 @@ export default function Dashboard() {
     return (
       <div style={{
         width: '100vw',
-        minHeight: '100vh',
+        height: '100vh',
         backgroundColor: '#121212',
         color: '#F4F1DE',
-        padding: '48px',
+        overflow: 'auto',
+        boxSizing: 'border-box',
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '48px' }}>
           <ContactEditor onBack={() => setActiveView('dashboard')} />
         </div>
       </div>

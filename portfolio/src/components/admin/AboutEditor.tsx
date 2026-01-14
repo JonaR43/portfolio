@@ -369,7 +369,7 @@ export default function AboutEditor({ onBack }: { onBack: () => void }) {
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr auto', gap: '8px', alignItems: 'end' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '8px', alignItems: 'end' }}>
             <div>
               <label style={{ ...labelStyle, fontSize: '10px' }}>Degree</label>
               <input
