@@ -1,6 +1,5 @@
 import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
 // --- Configuration: "The Esports Analyst" Palette ---

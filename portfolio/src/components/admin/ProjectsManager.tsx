@@ -83,10 +83,6 @@ function ProjectForm({ project, onSave, onCancel, isLoading }: ProjectFormProps)
     }
   };
 
-  const removeGalleryUrl = (index: number) => {
-    setFormData({ ...formData, gallery: formData.gallery.filter((_, i) => i !== index) });
-  };
-
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>

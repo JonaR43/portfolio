@@ -1,6 +1,6 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Grid, OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
+import { Grid, OrbitControls, PerspectiveCamera } from '@react-three/drei';
 
 // --- Configuration: "The System Architect" Palette ---
 const COLORS = {
