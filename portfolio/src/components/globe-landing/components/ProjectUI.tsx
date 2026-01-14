@@ -66,7 +66,7 @@ export const ProjectCard = ({ project, onClick }: { project: typeof PROJECT_DATA
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', fontFamily: '"Share Tech Mono", monospace', textTransform: 'uppercase', letterSpacing: '-0.02em', marginBottom: '8px' }}>{project.title}</h3>
                 <div style={{ height: '1px', width: '40px', backgroundColor: '#E07A5F', marginBottom: '16px', opacity: 0.6 }} />
                 <p style={{ fontSize: '0.875rem', color: '#aaa', lineHeight: '1.6', marginBottom: '24px', flex: 1 }}>{project.desc}</p>
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>{project.tech.map(t => <TechBadge key={t} label={t} />)}</div>
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>{project.tech.map((t, index) => <TechBadge key={t} label={t} index={index} />)}</div>
             </div>
         </div>
     );
@@ -121,7 +121,7 @@ export const ProjectDetailView = ({ project, onBack }: { project: typeof PROJECT
                     </div>
                     <div>
                         <h3 style={{ color: '#E07A5F', fontFamily: 'monospace', letterSpacing: '0.1em', marginBottom: '12px', fontSize: '12px' }}>// TECH_STACK</h3>
-                        <div style={{ display: 'flex', flexWrap: 'wrap' }}>{project.tech.map(t => <TechBadge key={t} label={t} />)}</div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap' }}>{project.tech.map((t, index) => <TechBadge key={t} label={t} index={index} />)}</div>
                     </div>
                     <div style={{ marginTop: 'auto' }}>
                         <h3 style={{ color: '#E07A5F', fontFamily: 'monospace', letterSpacing: '0.1em', marginBottom: '12px', fontSize: '12px' }}>// UPLINKS</h3>

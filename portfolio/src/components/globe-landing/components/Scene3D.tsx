@@ -65,7 +65,7 @@ export function CameraRig({ activeSection }: { activeSection: string | null }) {
         const targetDistance = activeSection ? 1.5 : 3.5;
         const currentPos = state.camera.position.clone();
         const targetPos = currentPos.normalize().multiplyScalar(targetDistance);
-        state.camera.position.lerp(targetPos, 0.02);
+        state.camera.position.lerp(targetPos, 0.05);
         state.camera.lookAt(0, 0, 0);
     });
     return null;

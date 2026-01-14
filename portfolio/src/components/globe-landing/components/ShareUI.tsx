@@ -2,23 +2,64 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useIsMobile } from '../hooks'; // Import the hook
 
-export const TechBadge = ({ label }: { label: string }) => (
-    <span style={{
-        display: 'inline-block',
-        padding: '4px 8px',
-        marginRight: '8px',
-        marginBottom: '4px',
-        borderRadius: '4px',
-        backgroundColor: 'rgba(224, 122, 95, 0.05)',
-        border: '1px solid rgba(224, 122, 95, 0.2)',
-        fontSize: '10px',
-        fontFamily: '"Share Tech Mono", monospace',
-        color: '#E07A5F',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-    }}>
+export const TechBadge = ({ label, index = 0 }: { label: string, index?: number }) => (
+    <motion.span
+        initial={{ opacity: 0, scale: 0.8, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{
+            duration: 0.4,
+            delay: index * 0.05,
+            type: "spring",
+            stiffness: 200,
+            damping: 20
+        }}
+        whileHover={{
+            scale: 1.1,
+            backgroundColor: 'rgba(224, 122, 95, 0.15)',
+            borderColor: 'rgba(224, 122, 95, 0.6)',
+            boxShadow: '0 0 15px rgba(224, 122, 95, 0.3)',
+            transition: { duration: 0.2 }
+        }}
+        whileTap={{ scale: 0.95 }}
+        style={{
+            display: 'inline-block',
+            padding: '4px 8px',
+            marginRight: '8px',
+            marginBottom: '4px',
+            borderRadius: '4px',
+            backgroundColor: 'rgba(224, 122, 95, 0.05)',
+            border: '1px solid rgba(224, 122, 95, 0.2)',
+            fontSize: '10px',
+            fontFamily: '"Share Tech Mono", monospace',
+            color: '#E07A5F',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            position: 'relative',
+            overflow: 'hidden',
+        }}
+    >
         {label}
-    </span>
+        <motion.div
+            initial={{ x: '-100%' }}
+            animate={{ x: '200%' }}
+            transition={{
+                duration: 2,
+                delay: index * 0.05 + 0.5,
+                repeat: Infinity,
+                repeatDelay: 5,
+                ease: "linear"
+            }}
+            style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '50%',
+                height: '100%',
+                background: 'linear-gradient(90deg, transparent, rgba(224, 122, 95, 0.3), transparent)',
+                pointerEvents: 'none',
+            }}
+        />
+    </motion.span>
 );
 
 export const StatBox = ({ label, value, sub }: { label: string, value: string, sub?: string }) => (

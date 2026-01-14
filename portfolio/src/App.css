@@ -6,4 +6,62 @@ body, html, #root {
   height: 100%;
   overflow: hidden; /* Prevents scrollbars if the canvas is slightly too big */
   background-color: #121212; /* Matches your background color to prevent white flashes */
+  cursor: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Edge */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox and IE */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Custom Modern Dot Cursor */
+* {
+  cursor: none;
+}
+
+/* Custom Cursor Dot */
+.custom-cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #E07A5F;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease-out, width 0.2s, height 0.2s;
+  box-shadow: 0 0 10px rgba(224, 122, 95, 0.6), 0 0 20px rgba(224, 122, 95, 0.3);
+}
+
+/* Custom Cursor Ring */
+.custom-cursor-ring {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(224, 122, 95, 0.4);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease-out, height 0.2s ease-out, opacity 0.2s;
+}
+
+/* Hover state for interactive elements */
+.custom-cursor-dot.hover {
+  width: 16px;
+  height: 16px;
+  background-color: #F4F1DE;
+  box-shadow: 0 0 15px rgba(244, 241, 222, 0.8), 0 0 30px rgba(224, 122, 95, 0.4);
+}
+
+.custom-cursor-ring.hover {
+  width: 48px;
+  height: 48px;
+  opacity: 0.8;
 }

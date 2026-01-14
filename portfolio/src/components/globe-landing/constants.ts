@@ -12,40 +12,63 @@ export const SECTIONS = [
 
 export const PROJECT_DATA = [
     {
-        id: 'DL-01',
-        title: 'Esports Data Lake',
-        desc: 'Ingesting 5TB of match data daily via serverless pipelines. Normalized disparate data sources into a unified queryable format for analytics teams.',
-        tech: ['AWS S3', 'Athena', 'Kinesis', 'Python'],
+        id: 'SP-24',
+        title: 'JACS ShiftPilot',
+        desc: 'Intelligent volunteer management platform featuring a weighted matching algorithm (Location, Skills, Availability). Built with a robust repository pattern and 82% test coverage.',
+        tech: ['TypeScript', 'Node.js', 'PostgreSQL', 'Prisma'],
         gallery: [
-            'https://images.unsplash.com/photo-1558494949-efc025793ad2?auto=format&fit=crop&q=80&w=800',
-            'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800',
-            'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=800'
+            'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=800'
         ],
-        githubUrl: 'https://github.com',
-        liveUrl: 'https://google.com'
+        githubUrl: 'https://github.com/JonaR43/Software_Design_Group_24',
+        liveUrl: '#'
     },
     {
-        id: 'OE-99',
-        title: 'Odds Engine',
-        desc: 'Sub-50ms latency engine for calculating live win probabilities. Uses in-memory caching and optimized Go routines to handle concurrent probability modeling.',
-        tech: ['Golang', 'Redis', 'WebSockets', 'Docker'],
+        id: 'SM-02',
+        title: 'ShopMauve E-Commerce',
+        desc: 'Full-stack e-commerce solution with Stripe integration, real-time inventory, and an analytics dashboard. Features a secure JWT-based auth system and a responsive Radix UI frontend.',
+        tech: ['React', 'TypeScript', 'Prisma', 'Stripe', 'Tailwind'],
         gallery: [
-            'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&q=80&w=800',
-            'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=800'
+            'https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800'
         ],
         githubUrl: 'https://github.com',
-        liveUrl: 'https://google.com'
+        liveUrl: '#'
     },
     {
-        id: 'MT-42',
-        title: 'Match Telemetry',
-        desc: 'Real-time player movement tracking and heatmap generation. Visualizes player density and rotation patterns on a live 2D map.',
-        tech: ['Rust', 'Kafka', 'React', 'D3.js'],
+        id: 'PV-VR',
+        title: 'PutterVerse',
+        desc: 'Immersive VR Mini Golf experience for Meta Quest. Features physics-driven gameplay, multiple themed courses (Ice Arena, Haunted Mansion), and local multiplayer.',
+        tech: ['Unity', 'C#', 'VR/XR', 'Meta Quest'],
         gallery: [
-            'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800',
-            'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=800'
+            'https://images.unsplash.com/photo-1622979135225-d2ba269fb1bd?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&q=80&w=800'
         ],
-        githubUrl: 'https://github.com',
-        liveUrl: 'https://google.com'
+        githubUrl: 'https://github.com/JonaR43/PutterVerse',
+        liveUrl: '#'
+    },
+    {
+        id: 'BG-PY',
+        title: 'Barcode Generator',
+        desc: 'Desktop automation tool for bulk generating Avery-compatible barcode labels from CSV data. Built with Tkinter for a native drag-and-drop UI and ReportLab for precise PDF rendering.',
+        tech: ['Python', 'Tkinter', 'Pandas', 'ReportLab'],
+        gallery: [
+            'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1616400619175-5beda3a17896?auto=format&fit=crop&q=80&w=800'
+        ],
+        githubUrl: 'https://github.com/JonaR43/Barcode',
+        liveUrl: '#'
+    },
+    {
+        id: 'CL-FS',
+        title: 'Contact List Manager',
+        desc: 'Full-stack CRUD application for managing personal contacts. Features a Flask (Python) REST API backend and a responsive React (Vite) frontend with real-time updates.',
+        tech: ['React', 'Flask', 'Python', 'SQLAlchemy'],
+        gallery: [
+            'https://images.unsplash.com/photo-1512428559087-560fa5ce7d02?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1555421689-d68471e189f2?auto=format&fit=crop&q=80&w=800'
+        ],
+        githubUrl: 'https://github.com/JonaR43/Contact-List',
+        liveUrl: '#'
     }
 ];
