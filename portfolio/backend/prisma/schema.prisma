@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ========== USER & AUTH ==========
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// ========== PROJECTS ==========
+model Project {
+  id          String   @id // e.g., 'SP-24'
+  title       String
+  description String   @db.Text
+  tech        String[] // Array of technologies
+  gallery     String[] // Array of image URLs
+  githubUrl   String?  @map("github_url")
+  liveUrl     String?  @map("live_url")
+  order       Int      @default(0) // For custom ordering
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("projects")
+}
+
+// ========== ABOUT SECTION ==========
+model AboutSection {
+  id        String   @id @default(cuid())
+  name      String
+  tagline   String   @db.Text
+  objective String   @db.Text
+  arsenal   String[] // Tech stack array
+  stats     Json     // { role, focus, location, status }
+  education Json     // Array of { degree, school, year }
+  clearance String   @default("UH-25")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("about_section")
+}
+
+// ========== CONTACT INFO ==========
+model ContactInfo {
+  id        String   @id @default(cuid())
+  email     String
+  github    String?
+  linkedin  String?
+  resume    String?
+  twitter   String?
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("contact_info")
+}
+
+// ========== SITE SETTINGS ==========
+model SiteSettings {
+  id              String   @id @default(cuid())
+  backgroundColor String   @default("#121212") @map("background_color")
+  accentColor     String   @default("#E07A5F") @map("accent_color")
+  textColor       String   @default("#F4F1DE") @map("text_color")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
