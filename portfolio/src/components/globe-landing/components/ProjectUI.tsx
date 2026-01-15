@@ -50,7 +50,7 @@ export const ImageCarousel = ({ images, autoPlayInterval = 4000 }: { images: str
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
-            <img src={images[index]} alt="Project Gallery" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.9 }} />
+            <img src={images[index]} alt="Project Gallery" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', opacity: 0.9 }} />
             <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
             {images.length > 1 && (
                 <>
