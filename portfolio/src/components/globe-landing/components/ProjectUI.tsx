@@ -1,15 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { PROJECT_DATA } from '../constants';
 import { TechBadge } from './ShareUI';
 import { useIsMobile } from '../hooks';
 
-export const ImageCarousel = ({ images }: { images: string[] }) => {
+export const ImageCarousel = ({ images, autoPlayInterval = 4000 }: { images: string[], autoPlayInterval?: number }) => {
     const [index, setIndex] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
     const isMobile = useIsMobile();
+
+    const nextImage = useCallback(() => {
+        setIndex((prev) => (prev + 1) % images.length);
+    }, [images.length]);
 
     const next = (e: React.MouseEvent) => {
         e.stopPropagation();
-        setIndex((prev) => (prev + 1) % images.length);
+        nextImage();
     };
 
     const prev = (e: React.MouseEvent) => {
@@ -17,19 +22,34 @@ export const ImageCarousel = ({ images }: { images: string[] }) => {
         setIndex((prev) => (prev - 1 + images.length) % images.length);
     };
 
+    // Auto-play timer
+    useEffect(() => {
+        if (images.length <= 1 || isPaused) return;
+
+        const timer = setInterval(() => {
+            nextImage();
+        }, autoPlayInterval);
+
+        return () => clearInterval(timer);
+    }, [images.length, isPaused, autoPlayInterval, nextImage]);
+
     return (
-        <div style={{ 
-            position: 'relative', 
-            width: '100%', 
-            // Mobile: Fixed height for the image area. Desktop: Fills the column.
-            height: isMobile ? '300px' : '100%', 
-            minHeight: isMobile ? '300px' : '400px', 
-            backgroundColor: '#000', 
-            borderRadius: '8px', 
-            overflow: 'hidden', 
-            border: '1px solid rgba(255,255,255,0.1)',
-            marginBottom: isMobile ? '32px' : '0' 
-        }}>
+        <div
+            style={{
+                position: 'relative',
+                width: '100%',
+                // Mobile: Fixed height for the image area. Desktop: Fills the column.
+                height: isMobile ? '300px' : '100%',
+                minHeight: isMobile ? '300px' : '400px',
+                backgroundColor: '#000',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                border: '1px solid rgba(255,255,255,0.1)',
+                marginBottom: isMobile ? '32px' : '0'
+            }}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+        >
             <img src={images[index]} alt="Project Gallery" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.9 }} />
             <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
             {images.length > 1 && (
