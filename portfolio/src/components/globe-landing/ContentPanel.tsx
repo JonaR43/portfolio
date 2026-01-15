@@ -167,26 +167,19 @@ export default function ContentPanel({ activeSection, onClose }: { activeSection
                                                         { label: 'GitHub_Repo', url: contact.github },
                                                         { label: 'LinkedIn_Feed', url: contact.linkedin },
                                                         { label: 'Resume_DL', url: contact.resume },
-                                                    ].filter(item => item.url).map(({ label, url }) => {
-                                                        // For resume, add fl_attachment to Cloudinary URL for proper download
-                                                        let finalUrl = url!;
-                                                        if (label === 'Resume_DL' && url?.includes('cloudinary.com')) {
-                                                            finalUrl = url.replace('/upload/', '/upload/fl_attachment/');
-                                                        }
-                                                        return (
-                                                            <a
-                                                                key={label}
-                                                                href={finalUrl}
-                                                                target={label === 'Email_Protocol' ? '_self' : '_blank'}
-                                                                rel="noopener noreferrer"
-                                                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textDecoration: 'none', color: 'inherit' }}
-                                                                className="hover:bg-[#E07A5F] hover:text-black hover:border-[#E07A5F] group"
-                                                            >
-                                                                <span style={{ fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '12px' }}>{label}</span>
-                                                                <span style={{ fontSize: '14px' }}>→</span>
-                                                            </a>
-                                                        );
-                                                    })}
+                                                    ].filter(item => item.url).map(({ label, url }) => (
+                                                        <a
+                                                            key={label}
+                                                            href={url!}
+                                                            target={label === 'Email_Protocol' ? '_self' : '_blank'}
+                                                            rel="noopener noreferrer"
+                                                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textDecoration: 'none', color: 'inherit' }}
+                                                            className="hover:bg-[#E07A5F] hover:text-black hover:border-[#E07A5F] group"
+                                                        >
+                                                            <span style={{ fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '12px' }}>{label}</span>
+                                                            <span style={{ fontSize: '14px' }}>→</span>
+                                                        </a>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </div>
