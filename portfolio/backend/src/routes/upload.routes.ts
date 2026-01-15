@@ -90,8 +90,12 @@ export default async function uploadRoutes(fastify: FastifyInstance) {
         });
       }
 
-      // Upload to Cloudinary
-      const result = await cloudinaryService.uploadPdf(buffer, 'portfolio/resume');
+      // Get original filename without extension, default to 'resume'
+      const originalName = data.filename?.replace(/\.pdf$/i, '') || 'resume';
+      const safeName = originalName.replace(/[^a-zA-Z0-9_-]/g, '_');
+
+      // Upload to Cloudinary with the original filename
+      const result = await cloudinaryService.uploadPdf(buffer, 'portfolio/resume', safeName);
 
       return reply.send({
         success: true,

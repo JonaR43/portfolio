@@ -49,13 +49,15 @@ export const cloudinaryService = {
   /**
    * Upload a PDF buffer to Cloudinary
    */
-  uploadPdf: async (buffer: Buffer, folder: string = 'portfolio/documents'): Promise<{ url: string; publicId: string }> => {
+  uploadPdf: async (buffer: Buffer, folder: string = 'portfolio/documents', filename: string = 'resume'): Promise<{ url: string; publicId: string }> => {
     return new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
           folder,
           resource_type: 'raw',
           format: 'pdf',
+          public_id: filename,
+          overwrite: true,
         },
         (error, result) => {
           if (error || !result) {
