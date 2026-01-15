@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { PROJECT_DATA } from '../constants';
 import { TechBadge } from './ShareUI';
 import { useIsMobile } from '../hooks';
@@ -50,7 +51,47 @@ export const ImageCarousel = ({ images, autoPlayInterval = 4000 }: { images: str
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
-            <img src={images[index]} alt="Project Gallery" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', opacity: 0.9 }} />
+            <AnimatePresence mode="wait">
+                {/* Blurred background to fill empty space instead of black bars */}
+                <motion.img
+                    key={`blur-${index}`}
+                    src={images[index]}
+                    alt=""
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.4 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    style={{
+                        position: 'absolute',
+                        inset: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        filter: 'blur(20px)',
+                        transform: 'scale(1.1)',
+                        pointerEvents: 'none'
+                    }}
+                />
+            </AnimatePresence>
+            <AnimatePresence mode="wait">
+                {/* Main image */}
+                <motion.img
+                    key={`main-${index}`}
+                    src={images[index]}
+                    alt="Project Gallery"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.95 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    style={{
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                        objectPosition: 'center'
+                    }}
+                />
+            </AnimatePresence>
             <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
             {images.length > 1 && (
                 <>
