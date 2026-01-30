@@ -71,10 +71,10 @@ export default function ContentPanel({ activeSection, onClose }: { activeSection
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                                 <span className="font-mono text-xs tracking-[0.2em] uppercase">ABORT</span>
                              </button>
-                             <div className="flex items-center gap-3">
+{/*                              <div className="flex items-center gap-3">
                                  <div className="w-1.5 h-1.5 bg-[#E07A5F] rounded-full animate-pulse" />
                                  <h2 className="text-lg font-bold tracking-[0.2em] text-[#F4F1DE] uppercase opacity-80 hidden md:block font-mono">// {activeSection}</h2>
-                             </div>
+                             </div> */}
                         </div>
                         {/* SCROLL CONTAINER */}
                         <div className="relative z-10 w-full p-6 md:p-12 text-gray-300 font-sans hide-scrollbar" style={{ flex: 1, minHeight: 0, overflowY: 'scroll', WebkitOverflowScrolling: 'touch', touchAction: 'pan-y', position: 'relative' }}>
